@@ -3,43 +3,59 @@ const http = require('http'),
 	path = require("path");
 
 http.createServer(function (req, res) {
-
-    if(req.url.indexOf('.html') != -1){ //req.url has the pathname, check if it conatins '.html'
-
-      fs.readFile(__dirname + '/index.html', function (err, data) {
-        if (err) console.log(err);
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(data);
-        res.end();
-      });
-
+	const gameFileDir =  __dirname  + '/Game/';
+    if(req.url.indexOf('.html') != -1){
+		var file = path.join(getDirectories(gameFileDir)[1],req.url.substring(1,req.url.length));
+		createType('html',file);
     }
-	 if(req.url.indexOf('.js') != -1){ //req.url has the pathname, check if it conatins '.js'
-      fs.readFile(__dirname + '/public/js/script.js', function (err, data) {
-        if (err) console.log(err);
-        res.writeHead(200, {'Content-Type': 'text/javascript'});
-        res.write(data);
-        res.end();
-      });
-	 }
-   if(req.url.indexOf('.css') != -1){ //req.url has the pathname, check if it conatins '.css'
-
-      fs.readFile(__dirname + '/public/css/style.css', function (err, data) {
-        if (err) console.log(err);
-        res.writeHead(200, {'Content-Type': 'text/css'});
-        res.write(data);
-        res.end();
-      });
+	if(req.url.indexOf('.js') != -1){
+		var file = path.join(getDirectories(gameFileDir)[2],req.url.substring(1,req.url.length));
+		createType('javascript',file);
+	}
+	if(req.url.indexOf('.css') != -1){
+		var file = path.join(getDirectories(gameFileDir)[0],req.url.substring(1,req.url.length));
+		createType('css',file);
     }
-	
-	//To test make make a call like this: getDirectories("../");
-	function getDirectories (srcPath) {
-		var dirs = []
-		dirs = fs.readdirSync(srcPath,function(err,files) {
-		if(err) {throw err;}
-		}).filter(file => fs.statSync(path.join(srcPath,file)).isDirectory())
-		for(x = 0; x < dirs.length; x++ ) {
-			console.log(dirs[x]);
-		}
+	//Create the Type of the currentRequest
+	function createType (type,curFile) {
+			fs.readFile(curFile, function (err, data) {
+			if (err) console.log(err);
+			res.writeHead(200, {'Content-Type': 'text/' + type});
+			res.write(data);
+			res.end();
+		  });
 	}
 }).listen(8888,'127.0.0.1');
+//Function returns the directory requested
+function getDirectories (srcPath) {
+	var dirs = []
+	dirs = fs.readdirSync(srcPath,function(err,files) {
+	if(err) {throw err;}
+	}).filter(file => fs.statSync(path.join(srcPath,file)).isDirectory())
+	for(var x = 0; x < dirs.length;x++) {
+		dirs[x] = path.join(srcPath,dirs[x]);
+	}
+	return dirs;
+}
+//Finds all the files in the directory being aprsed in
+function getFiles(type,directory) {
+	var rootFiles = directory + "/";
+	switch(type) {
+		case "css":
+			rootFiles = rootFiles + "css";
+			break;
+		case "js":
+			rootFiles = rootFiles + "js";
+			break;
+		case "html":
+			rootFiles = rootFiles + "html";
+			break;
+	}
+	var allFiles = fs.readdirSync(rootFiles,function(err,files) {
+		if(err) {throw err;}
+		});
+		for(var x = 0; x < allFiles.length;x++) {
+			allFiles[x] = path.join(rootFiles,allFiles[x]);
+		}
+		return allFiles;
+}
