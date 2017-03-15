@@ -37,25 +37,3 @@ function getDirectories (srcPath) {
 	}
 	return dirs;
 }
-//Finds all the files in the directory being aprsed in
-function getFiles(type,directory) {
-	var rootFiles = directory + "/";
-	switch(type) {
-		case "css":
-			rootFiles = rootFiles + "css";
-			break;
-		case "js":
-			rootFiles = rootFiles + "js";
-			break;
-		case "html":
-			rootFiles = rootFiles + "html";
-			break;
-	}
-	var allFiles = fs.readdirSync(rootFiles,function(err,files) {
-		if(err) {throw err;}
-		});
-		for(var x = 0; x < allFiles.length;x++) {
-			allFiles[x] = path.join(rootFiles,allFiles[x]);
-		}
-		return allFiles;
-}
