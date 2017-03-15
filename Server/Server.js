@@ -1,5 +1,6 @@
-var http = require('http'),
-	fs	 = require('fs');
+const http = require('http'),
+	fs	 = require('fs'),
+	path = require("path");
 
 http.createServer(function (req, res) {
 
@@ -29,6 +30,16 @@ http.createServer(function (req, res) {
         res.write(data);
         res.end();
       });
-
     }
+	
+	//To test make make a call like this: getDirectories("../");
+	function getDirectories (srcPath) {
+		var dirs = []
+		dirs = fs.readdirSync(srcPath,function(err,files) {
+		if(err) {throw err;}
+		}).filter(file => fs.statSync(path.join(srcPath,file)).isDirectory())
+		for(x = 0; x < dirs.length; x++ ) {
+			console.log(dirs[x]);
+		}
+	}
 }).listen(8888,'127.0.0.1');
