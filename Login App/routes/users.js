@@ -61,7 +61,7 @@ passport.use(new LocalStrategy(
   	function(username, password, done) {
  		User.getUserByUsername(username, function(err, user){
  			if(err) throw err;
- 			if(!user) return done(null, false, {message: 'Unknown User'});
+ 			if(!user) return done(null, false, {message: 'Unknown user'});
 
  			User.comparePassword(password, user.password, function(err, isMatch){
  				if(err) throw err;
@@ -92,5 +92,11 @@ router.post('/login',
 			res.redirect('/');
 		}
 );
+
+router.get('/logout', function(req, res){
+	req.logout();
+	req.flash('success_msg', 'You are logged out');
+	res.redirect('/users/login');
+});
 
 module.exports = router;
