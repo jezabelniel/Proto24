@@ -3,7 +3,7 @@ const http = require('http'),
 	path = require("path");
 
 http.createServer(function (req, res) {
-	const gameFileDir =  __dirname  + '/Game/';
+	const gameFileDir = '../Game/';
     if(req.url.indexOf('.html') != -1){
 		var file = path.join(getDirectories(gameFileDir)[1],req.url.substring(1,req.url.length));
 		createType('html',file);
