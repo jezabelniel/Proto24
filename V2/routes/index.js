@@ -7,10 +7,11 @@ router.get('/', ensureAuthenticated, function(req, res){
 	res.render('index',{title: 'Dashboard',fileType: style[0],filePath: style[1]});
 });
 //Item Lists
-router.get('/items', function(req, res){
+router.get('/items', ensureAuthenticated, function(req, res){
 	var style = Functions.addIn('stylesheet','/css/style.css');
 	res.render('items',{title: 'Item Glossary',fileType: style[0],filePath: style[1]});
 });
+
 function ensureAuthenticated(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
@@ -19,5 +20,7 @@ function ensureAuthenticated(req, res, next){
 		res.redirect('/users/login');
 	}
 }
+
+
 
 module.exports = router;

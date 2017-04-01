@@ -1,2 +1,7 @@
 
-<p>Welcome {{user.username}}!1</p>
+<p>Welcome {{user.username}}!!</p>
+{{#if user.developer}}
+<p>Your account is registered as a developer account.</p>
+{{else}}
+<p>Your account is not a developer account.</p>
+{{/if}}
