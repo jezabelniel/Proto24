@@ -3,17 +3,18 @@ var router = express.Router();
 var app = express();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-
 var User = require('../models/user')
-
+var Functions = require('./Functions');
 //Register
 router.get('/register', function(req, res){
-	res.render('register',{title: 'Register'});
+	var style = Functions.addIn('stylesheet','/css/style.css');
+	res.render('register',{title: 'Register',fileType: style[0],filePath: style[1]});
 });
 
 //Login
 router.get('/login', function(req, res){
-	res.render('login',{title: 'Account Login'});
+	var style = Functions.addIn('stylesheet','/css/style.css');
+	res.render('login',{title: 'Account Login',fileType: style[0],filePath: style[1]});
 });
 //Register
 router.post('/register', function(req, res){
