@@ -15,6 +15,9 @@ var UserSchema = mongoose.Schema({
 	name: {
 		type: String
 	}
+	Developer: {
+		type: int32
+	}
 });
 
 var User = module.exports = mongoose.model('User', UserSchema);
@@ -32,11 +35,10 @@ module.exports.getUserByUsername = function(username, callback){
 	var query = {username: username};
 	User.findOne(query, callback);
 }
-
-module.exports.getUserById = function(id, callback){
-	User.findById(id, callback);
+module.exports.getUserDevId = function(id, callback){
+	var query = {id: Developer};
+	User.findOne(query, callback);
 }
-
 module.exports.comparePassword = function(candidatePassword, hash, callback){
 	bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
     	if(err) throw err;
