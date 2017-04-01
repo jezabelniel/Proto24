@@ -1,15 +1,19 @@
 const http = require('http'),
 	fs	 = require('fs'),
-	path = require("path");
-
+	path = require('path')
+	store = require('store'),
+	updateStore = require('store/plugins/update');
+	store.addPlugin(updateStore);
 http.createServer(function (req, res) {
 	const gameFileDir = '../Game/';
+	
     if(req.url.indexOf('.html') != -1){
 		var file = path.join(getDirectories(gameFileDir)[1],req.url.substring(1,req.url.length));
 		createType('html',file);
     }
 	if(req.url.indexOf('.js') != -1){
 		var file = path.join(getDirectories(gameFileDir)[2],req.url.substring(1,req.url.length));
+		console.log(file);
 		createType('javascript',file);
 	}
 	if(req.url.indexOf('.css') != -1){
@@ -26,6 +30,7 @@ http.createServer(function (req, res) {
 		  });
 	}
 }).listen(8888,'127.0.0.1');
+
 //Function returns the directory requested
 function getDirectories (srcPath) {
 	var dirs = []
