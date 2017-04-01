@@ -6,13 +6,13 @@ var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user')
 var Functions = require('./Functions');
 //Register
-router.get('/register', function(req, res){
+router.get('/register', ensureLoggedOut, function(req, res){
 	var style = Functions.addIn('stylesheet','/css/style.css');
 	res.render('register',{title: 'Register',fileType: style[0],filePath: style[1]});
 });
 
 //Login
-router.get('/login', function(req, res){
+router.get('/login', ensureLoggedOut, function(req, res){
 	var style = Functions.addIn('stylesheet','/css/style.css');
 	res.render('login',{title: 'Account Login',fileType: style[0],filePath: style[1]});
 });
@@ -23,6 +23,7 @@ router.post('/register', function(req, res){
 	var username = req.body.username;
 	var password = req.body.password;
 	var password2 = req.body.password2;
+	var dev = req.body.dev;
 
 	//Validation
 	req.checkBody('name', 'Name is required').notEmpty();
@@ -35,27 +36,73 @@ router.post('/register', function(req, res){
 	var errors = req.validationErrors();
 
 	if(errors){
+		var style = Functions.addIn('stylesheet','/css/style.css');
 		res.render('register', {
-			errors: errors
+			errors: errors,
+			title: 'Register', 
+			fileType: style[0], 
+			filePath: style[1]
 		});
 	}else{
-		var newUser = new User({
-			name: name,
-			email: email,
-			username: username,
-			password: password
-		});
+		if(dev=='on'){
+			var newUser = new User({
+				name: name,
+				email: email,
+				username: username,
+				password: password,
+				developer: dev
+			});
+		}else{
+			var newUser = new User({
+				name: name,
+				email: email,
+				username: username,
+				password: password
+			});
+		}
 
-		User.createUser(newUser, function(err, user){
+		User.checkEmailTaken(email, function(err, email){
 			if(err) throw err;
-			console.log(user);
-		});
-
-		req.flash('success_msg', 'You are registered and can now login');
-
-		res.redirect('/users/login');
+        	if(email != null){
+        		var style = Functions.addIn('stylesheet','/css/style.css');
+        		res.render('register', {
+					errors: [{param: 'email', msg: 'Email is already in use', value: ''}],
+					title: 'Register', 
+					fileType: style[0], 
+					filePath: style[1]
+				});
+        	}else{
+        		User.getUserByUsername(username, function(err, username){
+        			if(err) throw err;
+        			if(username != null){
+        				var style = Functions.addIn('stylesheet','/css/style.css');
+	        			res.render('register', {
+							errors: [{param: 'username', msg: 'Username is already taken', value: ''}],
+							title: 'Register', 
+							fileType: style[0], 
+							filePath: style[1]
+						});
+        			}else{
+		        		User.createUser(newUser, function(err, user){
+							if(err) throw err;
+							console.log(user);
+						});
+						req.flash('success_msg', 'You are registered and can now login');
+						res.redirect('/users/login');
+					}
+				});
+        	}
+        });
 	}
 });
+
+function ensureLoggedOut(req, res, next){
+	if(!req.isAuthenticated()){
+		return next();
+	}else{
+		res.redirect('/');
+	}
+}
 
 passport.use(new LocalStrategy(
   	function(username, password, done) {
