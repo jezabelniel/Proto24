@@ -18,6 +18,9 @@
             	<li role="presentation"><a href="/users/login">Login</a></li>
 	            <li role="presentation"><a href="/users/register">Register</a></li>
             {{/if}}
+            {{#if user.developer}}
+               <li role="presentation"><a href="/dev">Developer Options</a></li>
+            {{/if}}
           </ul>
         </nav>
         <h3 class="text-muted">{{title}}</h3>

@@ -12,6 +12,12 @@ router.get('/items', ensureAuthenticated, function(req, res){
 	res.render('items',{title: 'Item Glossary',fileType: style[0],filePath: style[1]});
 });
 
+router.get('/dev', ensureAuthenticated, ensureDev, function(req, res){
+	var style = Functions.addIn('stylesheet','/css/style.css');
+	res.render('dev',{title: 'Developer Options',fileType: style[0],filePath: style[1]});
+});
+
+
 function ensureAuthenticated(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
@@ -19,6 +25,15 @@ function ensureAuthenticated(req, res, next){
 		//req.flash('error_msg', 'You are not logged in');
 		res.redirect('/users/login');
 	}
+}
+
+function ensureDev(req, res, next){
+	if(res.locals.user.developer != null){
+		return next();
+	}else{
+		res.redirect('/');
+	}
+
 }
 
 
