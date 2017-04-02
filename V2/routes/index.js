@@ -11,13 +11,15 @@ router.get('/items', ensureAuthenticated, function(req, res){
 	var style = Functions.addIn('stylesheet','/css/style.css');
 	res.render('items',{title: 'Item Glossary',fileType: style[0],filePath: style[1]});
 });
-
+//Dev
 router.get('/dev', ensureAuthenticated, ensureDev, function(req, res){
 	var style = Functions.addIn('stylesheet','/css/style.css');
 	res.render('dev',{title: 'Developer Options',fileType: style[0],filePath: style[1]});
 });
-
-
+router.get('/dev/CreateItems', ensureAuthenticated, ensureDev, function(req, res){
+	var style = Functions.addIn('stylesheet','/css/style.css');
+	res.render('itemCreate',{title: 'Create Item',fileType: style[0],filePath: style[1]});
+});
 function ensureAuthenticated(req, res, next){
 	if(req.isAuthenticated()){
 		return next();

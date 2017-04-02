@@ -10,6 +10,9 @@
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
+		    {{#if user.developer}}
+               <li role="presentation"><a href="/dev">Developer Options</a></li>
+			{{/if}}
             {{#if user}}
 			         <li role="presentation"><a href="/items">Items</a></li>
             	<li role="presentation"><a href="/">Dashboard</a></li>
@@ -17,9 +20,6 @@
             {{else}}
             	<li role="presentation"><a href="/users/login">Login</a></li>
 	            <li role="presentation"><a href="/users/register">Register</a></li>
-            {{/if}}
-            {{#if user.developer}}
-               <li role="presentation"><a href="/dev">Developer Options</a></li>
             {{/if}}
           </ul>
         </nav>
